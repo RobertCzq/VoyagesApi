@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VoyagesApi.Data;
 using VoyagesApi.Models;
+using VoyagesApi.Utils;
 
 namespace VoyagesApi.Controllers
 {
@@ -66,7 +67,7 @@ namespace VoyagesApi.Controllers
             var (saved, data) = _voyageData.SaveVoyage(newVoyage);
             if (saved)
             {
-                SetUpChache(data);
+                CacheHelper.SetUpCache(voyageListCacheKey, _cache, data);
                 return Created("", newVoyage);
             }
             //Todo change this
@@ -92,18 +93,9 @@ namespace VoyagesApi.Controllers
         private IEnumerable<Voyage> GetData()
         {
             var voyageList = _voyageData.GetAll();
-            SetUpChache(voyageList);
+            CacheHelper.SetUpCache(voyageListCacheKey, _cache, voyageList);
             return voyageList;
         }
 
-        private void SetUpChache(IEnumerable<Voyage> voyageList)
-        {
-            var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(60))
-                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                    .SetPriority(CacheItemPriority.Normal)
-                    .SetSize(1024);
-            _cache.Set(voyageListCacheKey, voyageList, cacheEntryOptions);   
-        }
     }
 }
