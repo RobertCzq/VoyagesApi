@@ -64,6 +64,28 @@ namespace VoyagesApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync() 
         {
+            var voyages = GetVoyagesFromCache();
+            return Ok(voyages);
+        }
+
+
+        [HttpGet("GetAverage/{voyageCode}/{currency}")]
+        public async Task<IActionResult> GetAverage(string voyageCode, Currency currency)
+        {
+            var voyages = GetVoyagesFromCache();
+
+            var filteredValues = voyages.Where(voyage => voyage.VoyageCode.Equals(voyageCode));
+            if (filteredValues.Any())
+            {
+                var average = voyages.Sum(value => value.Price) / voyages.Count();
+                return Ok(average);
+            }
+
+            return NotFound();
+        }
+
+        private IEnumerable<Voyage> GetVoyagesFromCache()
+        {
             _logger.Log(LogLevel.Information, "Trying to fetch the list of voyages from cache.");
             if (_cache.TryGetValue(voyageListCacheKey, out IEnumerable<Voyage> voyages))
             {
@@ -81,29 +103,7 @@ namespace VoyagesApi.Controllers
                 _cache.Set(voyageListCacheKey, voyages, cacheEntryOptions);
             }
 
-            return Ok(voyages);
-        }
-
-
-        [HttpGet("GetAverage/{voyageCode}/{currency}")]
-        public async Task<IActionResult> GetAverage(string voyageCode, Currency currency)
-        {
-            if (_cache.TryGetValue(voyageListCacheKey, out IEnumerable<Voyage> voyages))
-            {
-                _logger.Log(LogLevel.Information, "Voyages list found in cache.");
-            }
-            else
-                voyages = voyageList;
-
-
-            var filteredValues = voyages.Where(voyage => voyage.VoyageCode.Equals(voyageCode));
-            if (filteredValues.Any())
-            {
-                var average = voyages.Sum(value => value.Price) / voyages.Count();
-                return Ok(average);
-            }
-
-            return NotFound();
+            return voyages;
         }
     }
 }
