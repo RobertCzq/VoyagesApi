@@ -5,60 +5,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VoyagesApi.Data;
 using VoyagesApi.Models;
 
 namespace VoyagesApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class VoyageController : ControllerBase
+    public class VoyagesController : ControllerBase
     {
-        private List<Voyage> voyageList = new List<Voyage>
-        {
-            new Voyage
-            {
-                VoyageCode = "451S",
-                Price = 121,
-                Currency = Currency.USD,
-                Timestamp = DateTimeOffset.Now
-            },
-            new Voyage
-            {
-                VoyageCode = "451S",
-                Price = 122,
-                Currency = Currency.USD,
-                Timestamp = DateTimeOffset.Now
-            },
-            new Voyage
-            {
-                VoyageCode = "451S",
-                Price = 127,
-                Currency = Currency.USD,
-                Timestamp = DateTimeOffset.Now
-            },
-            new Voyage
-            {
-                VoyageCode = "451S",
-                Price = 129,
-                Currency = Currency.USD,
-                Timestamp = DateTimeOffset.Now
-            },
-            new Voyage
-            {
-                VoyageCode = "451S",
-                Price = 121,
-                Currency = Currency.USD,
-                Timestamp = DateTimeOffset.Now
-            }
-        };
-        private readonly ILogger<VoyageController> _logger;
+        private readonly ILogger<VoyagesController> _logger;
         private const string voyageListCacheKey = "voyageList";
         private IMemoryCache _cache;
+        private IVoyageDataStore _voyageData;
 
-        public VoyageController(IMemoryCache cache, ILogger<VoyageController> logger)
+        public VoyagesController(IMemoryCache cache, ILogger<VoyagesController> logger, IVoyageDataStore voyageData)
         {
             _cache = cache;
             _logger = logger;
+            _voyageData = voyageData;
         }
 
         [HttpGet("GetAll")]
@@ -90,17 +55,22 @@ namespace VoyagesApi.Controllers
         [HttpPost("UpdatePrice({voyageCode},{price},{currency},{timestamp})")]
         public ActionResult UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
         {
-            var voyage = new Voyage
+            var newVoyage = new Voyage
             {
                 VoyageCode = voyageCode,
                 Price = price,
                 Currency = currency,
                 Timestamp = timestamp
             };
-            //TODO add to persistent db/file
-            voyageList.Add(voyage);
-            SetUpChache();
-            return Ok();
+
+            var (saved, data) = _voyageData.SaveVoyage(newVoyage);
+            if (saved)
+            {
+                SetUpChache(data);
+                return Created("", newVoyage);
+            }
+            //Todo change this
+            return NotFound();
         }
 
         private IEnumerable<Voyage> GetVoyages()
@@ -121,11 +91,12 @@ namespace VoyagesApi.Controllers
 
         private IEnumerable<Voyage> GetData()
         {
-            SetUpChache();
+            var voyageList = _voyageData.GetAll();
+            SetUpChache(voyageList);
             return voyageList;
         }
 
-        private void SetUpChache()
+        private void SetUpChache(IEnumerable<Voyage> voyageList)
         {
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromSeconds(60))

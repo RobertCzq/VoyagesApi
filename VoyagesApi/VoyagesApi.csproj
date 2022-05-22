@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Data\Data.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Data\Data.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 

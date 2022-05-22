@@ -1,0 +1,32 @@
+[
+  {
+    "voyageCode": "451S",
+    "price": 121,
+    "currency": 0,
+    "timestamp": "2022-05-22T14:14:34.7362585+02:00"
+  },
+  {
+    "voyageCode": "451S",
+    "price": 122,
+    "currency": 0,
+    "timestamp": "2022-05-22T14:14:34.7363203+02:00"
+  },
+  {
+    "voyageCode": "451S",
+    "price": 127,
+    "currency": 0,
+    "timestamp": "2022-05-22T14:14:34.7363227+02:00"
+  },
+  {
+    "voyageCode": "451S",
+    "price": 129,
+    "currency": 0,
+    "timestamp": "2022-05-22T14:14:34.7363232+02:00"
+  },
+  {
+    "voyageCode": "451S",
+    "price": 121,
+    "currency": 0,
+    "timestamp": "2022-05-22T14:14:34.7363237+02:00"
+  }
+]

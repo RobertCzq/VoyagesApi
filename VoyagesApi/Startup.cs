@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VoyagesApi.Data;
 
 namespace VoyagesApi
 {
@@ -26,7 +27,7 @@ namespace VoyagesApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddTransient<IVoyageDataStore, JsonVoyageDataStore>();
             services.AddControllers();
             services.AddMemoryCache();
             services.AddSwaggerGen(c =>
