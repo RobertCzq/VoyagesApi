@@ -65,7 +65,7 @@ namespace VoyagesApi.Controllers
             var filteredValues = voyages.Where(voyage => voyage.VoyageCode.Equals(voyageCode));
             if (filteredValues.Any())
             {
-                var average = voyages.Sum(value => value.Price) / voyages.Count();
+                var average = voyages.Sum(value => CurrencyHelper.TransformToCurrency(value, currency)) / voyages.Count();
                 return Ok(average);
             }
 
