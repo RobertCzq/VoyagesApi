@@ -61,16 +61,19 @@ namespace VoyagesApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        [HttpGet("GetAll")]
+        public ActionResult GetAll()
         {
             var voyages = GetVoyages();
-            return Ok(voyages);
+            if(voyages.Any())
+                return Ok(voyages);
+
+            return NotFound();
         }
 
 
         [HttpGet("GetAverage({voyageCode},{currency})")]
-        public async Task<IActionResult> GetAverage(string voyageCode, Currency currency)
+        public ActionResult GetAverage(string voyageCode, Currency currency)
         {
             var voyages = GetVoyages();
 
@@ -85,7 +88,7 @@ namespace VoyagesApi.Controllers
         }
 
         [HttpPost("UpdatePrice({voyageCode},{price},{currency},{timestamp})")]
-        public async Task<IActionResult> UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
+        public ActionResult UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
         {
             var voyage = new Voyage
             {
