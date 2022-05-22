@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using VoyagesApi.Data;
 using VoyagesApi.Models;
@@ -13,6 +15,8 @@ namespace VoyagesApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
     public class VoyagesController : ControllerBase
     {
         private readonly ILogger<VoyagesController> _logger;
@@ -27,7 +31,13 @@ namespace VoyagesApi.Controllers
             _voyageData = voyageData;
         }
 
+        /// <summary>
+        /// Returns all voyage items
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetAll")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAll()
         {
             var voyages = GetVoyages();
@@ -37,8 +47,15 @@ namespace VoyagesApi.Controllers
             return NotFound();
         }
 
-
+        /// <summary>
+        /// Returns the average of all the prices for the specified voyage code in the specified currency 
+        /// </summary>
+        /// <param name="voyageCode"></param>
+        /// <param name="currency"></param>
+        /// <returns></returns>
         [HttpGet("GetAverage({voyageCode},{currency})")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetAverage(string voyageCode, Currency currency)
         {
             var voyages = GetVoyages();
@@ -53,7 +70,17 @@ namespace VoyagesApi.Controllers
             return NotFound();
         }
 
+        /// <summary>
+        /// Adds a new record with the specified price, currency and timestamp for the voyage  
+        /// </summary>
+        /// <param name="voyageCode"></param>
+        /// <param name="price"></param>
+        /// <param name="currency"></param>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
         [HttpPost("UpdatePrice({voyageCode},{price},{currency},{timestamp})")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
         {
             var newVoyage = new Voyage
@@ -70,8 +97,8 @@ namespace VoyagesApi.Controllers
                 CacheHelper.SetUpCache(voyageListCacheKey, _cache, data);
                 return Created("", newVoyage);
             }
-            //Todo change this
-            return NotFound();
+
+            return BadRequest();
         }
 
         private IEnumerable<Voyage> GetVoyages()

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VoyagesApi</name>
+    </assembly>
+    <members>
+        <member name="M:VoyagesApi.Controllers.VoyagesController.GetAll">
+            <summary>
+            Returns all voyage items
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:VoyagesApi.Controllers.VoyagesController.GetAverage(System.String,VoyagesApi.Models.Currency)">
+            <summary>
+            Returns the average of all the prices for the specified voyage code in the specified currency 
+            </summary>
+            <param name="voyageCode"></param>
+            <param name="currency"></param>
+            <returns></returns>
+        </member>
+        <member name="M:VoyagesApi.Controllers.VoyagesController.UpdatePrice(System.String,System.Decimal,VoyagesApi.Models.Currency,System.DateTimeOffset)">
+            <summary>
+            Adds a new record with the specified price, currency and timestamp for the voyage  
+            </summary>
+            <param name="voyageCode"></param>
+            <param name="price"></param>
+            <param name="currency"></param>
+            <param name="timestamp"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
