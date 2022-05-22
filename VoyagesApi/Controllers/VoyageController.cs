@@ -10,10 +10,10 @@ using VoyagesApi.Models;
 namespace VoyagesApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class VoyageController : ControllerBase
     {
-        private Voyage[] voyageList = new Voyage[]
+        private List<Voyage> voyageList = new List<Voyage>
         {
             new Voyage
             {
@@ -62,17 +62,17 @@ namespace VoyagesApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync() 
+        public async Task<IActionResult> GetAsync()
         {
-            var voyages = GetVoyagesFromCache();
+            var voyages = GetVoyages();
             return Ok(voyages);
         }
 
 
-        [HttpGet("GetAverage/{voyageCode}/{currency}")]
+        [HttpGet("GetAverage({voyageCode},{currency})")]
         public async Task<IActionResult> GetAverage(string voyageCode, Currency currency)
         {
-            var voyages = GetVoyagesFromCache();
+            var voyages = GetVoyages();
 
             var filteredValues = voyages.Where(voyage => voyage.VoyageCode.Equals(voyageCode));
             if (filteredValues.Any())
@@ -84,7 +84,23 @@ namespace VoyagesApi.Controllers
             return NotFound();
         }
 
-        private IEnumerable<Voyage> GetVoyagesFromCache()
+        [HttpPost("UpdatePrice({voyageCode},{price},{currency},{timestamp})")]
+        public async Task<IActionResult> UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
+        {
+            var voyage = new Voyage
+            {
+                VoyageCode = voyageCode,
+                Price = price,
+                Currency = currency,
+                Timestamp = timestamp
+            };
+            //TODO add to persistent db/file
+            voyageList.Add(voyage);
+            SetUpChache();
+            return Ok();
+        }
+
+        private IEnumerable<Voyage> GetVoyages()
         {
             _logger.Log(LogLevel.Information, "Trying to fetch the list of voyages from cache.");
             if (_cache.TryGetValue(voyageListCacheKey, out IEnumerable<Voyage> voyages))
@@ -94,16 +110,26 @@ namespace VoyagesApi.Controllers
             else
             {
                 _logger.Log(LogLevel.Information, "Voyages list not found in cache. Fetching from database.");
-                voyages = voyageList;
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetSlidingExpiration(TimeSpan.FromSeconds(60))
-                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                        .SetPriority(CacheItemPriority.Normal)
-                        .SetSize(1024);
-                _cache.Set(voyageListCacheKey, voyages, cacheEntryOptions);
+                voyages = GetData();
             }
 
             return voyages;
+        }
+
+        private IEnumerable<Voyage> GetData()
+        {
+            SetUpChache();
+            return voyageList;
+        }
+
+        private void SetUpChache()
+        {
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(60))
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                    .SetPriority(CacheItemPriority.Normal)
+                    .SetSize(1024);
+            _cache.Set(voyageListCacheKey, voyageList, cacheEntryOptions);   
         }
     }
 }
