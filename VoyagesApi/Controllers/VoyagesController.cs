@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -56,6 +57,7 @@ namespace VoyagesApi.Controllers
         [HttpGet("GetAverage({voyageCode},{currency})")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Administrator,Normal")]
         public ActionResult GetAverage(string voyageCode, Currency currency)
         {
             var voyages = GetVoyages();
@@ -81,6 +83,7 @@ namespace VoyagesApi.Controllers
         [HttpPost("UpdatePrice({voyageCode},{price},{currency},{timestamp})")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Administrator")]
         public ActionResult UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
         {
             var newVoyage = new Voyage
