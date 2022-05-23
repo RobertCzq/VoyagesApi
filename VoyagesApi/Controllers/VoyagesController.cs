@@ -49,6 +49,30 @@ namespace VoyagesApi.Controllers
         }
 
         /// <summary>
+        /// Returns the last 10 prices, currencies and timestamps for the specified voyage code
+        /// </summary>
+        /// <param name="voyageCode"></param>
+        /// <returns></returns>
+        [HttpGet("GetLatestPrices")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Administrator,Normal")]
+        public ActionResult GetLatestPrices(string voyageCode)
+        {
+            var voyages = GetVoyages();
+
+            var filteredVoyages = voyages.Where(v => v.VoyageCode.Equals(voyageCode))
+                                         .OrderByDescending(v => v.Timestamp)
+                                         .Take(10)
+                                         .Select(v => new { Price = v.Price, Currency = v.Currency, Timestamp = v.Timestamp });
+
+            if (filteredVoyages.Any())
+                return Ok(filteredVoyages);
+
+            return NotFound();
+        }
+
+        /// <summary>
         /// Returns the average of all the prices for the specified voyage code in the specified currency 
         /// </summary>
         /// <param name="voyageCode"></param>
@@ -62,8 +86,8 @@ namespace VoyagesApi.Controllers
         {
             var voyages = GetVoyages();
 
-            var filteredValues = voyages.Where(voyage => voyage.VoyageCode.Equals(voyageCode));
-            if (filteredValues.Any())
+            var filteredVoyages = voyages.Where(voyage => voyage.VoyageCode.Equals(voyageCode));
+            if (filteredVoyages.Any())
             {
                 var average = voyages.Sum(value => CurrencyHelper.TransformToCurrency(value, currency)) / voyages.Count();
                 return Ok(average);
