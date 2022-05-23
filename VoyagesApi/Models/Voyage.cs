@@ -17,6 +17,6 @@ namespace VoyagesApi.Models
     {
         USD,
         EUR,
-        GBX
+        GBP
     }
 }

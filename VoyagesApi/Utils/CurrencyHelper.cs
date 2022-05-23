@@ -12,14 +12,14 @@ namespace VoyagesApi.Utils
         private static Dictionary<Tuple<Currency, Currency>, decimal> conversionRates
             = new Dictionary<Tuple<Currency, Currency>, decimal>           
         {
-            { Tuple.Create(Currency.USD, Currency.EUR), 1.10m },
-            { Tuple.Create(Currency.USD, Currency.GBX), 1.20m },
-            { Tuple.Create(Currency.EUR, Currency.USD), 0.90m },
-            { Tuple.Create(Currency.EUR, Currency.GBX), 1.10m },
-            { Tuple.Create(Currency.GBX, Currency.EUR), 0.90m },
-            { Tuple.Create(Currency.GBX, Currency.USD), 1.10m },
+            { Tuple.Create(Currency.USD, Currency.EUR), 0.94m },
+            { Tuple.Create(Currency.USD, Currency.GBP), 0.79m },
+            { Tuple.Create(Currency.EUR, Currency.USD), 1.07m },
+            { Tuple.Create(Currency.EUR, Currency.GBP), 0.85m },
+            { Tuple.Create(Currency.GBP, Currency.EUR), 1.18m },
+            { Tuple.Create(Currency.GBP, Currency.USD), 1.26m },
             { Tuple.Create(Currency.EUR, Currency.EUR), 1 },
-            { Tuple.Create(Currency.GBX, Currency.GBX), 1 },
+            { Tuple.Create(Currency.GBP, Currency.GBP), 1 },
             { Tuple.Create(Currency.USD, Currency.USD), 1 }
         };
 
