@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.32510.428
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoyagesApi", "VoyagesApi\VoyagesApi.csproj", "{73DFA8E7-8C62-4227-9E1B-18A05CB05D07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoyagesApi.Tests", "VoyagesApi.Tests\VoyagesApi.Tests.csproj", "{943FDD71-ABDC-4EA3-8A3C-EC99288132A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoyagesApi.Tests", "VoyagesApi.Tests\VoyagesApi.Tests.csproj", "{943FDD71-ABDC-4EA3-8A3C-EC99288132A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoyagesApi.IntegrationTests", "VoyagesApi.IntegrationTests\VoyagesApi.IntegrationTests.csproj", "{16427807-EFDB-44A5-8D4D-8D5409D4FE54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{943FDD71-ABDC-4EA3-8A3C-EC99288132A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{943FDD71-ABDC-4EA3-8A3C-EC99288132A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{943FDD71-ABDC-4EA3-8A3C-EC99288132A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16427807-EFDB-44A5-8D4D-8D5409D4FE54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16427807-EFDB-44A5-8D4D-8D5409D4FE54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16427807-EFDB-44A5-8D4D-8D5409D4FE54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16427807-EFDB-44A5-8D4D-8D5409D4FE54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
