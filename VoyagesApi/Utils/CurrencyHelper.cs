@@ -25,8 +25,14 @@ namespace VoyagesApi.Utils
 
         public static decimal TransformToCurrency(Voyage voyage, Currency toCurrency)
         {
-            var conversionRate = conversionRates[Tuple.Create(voyage.Currency, toCurrency)];
-            return (voyage.Price * conversionRate);
+            var key = Tuple.Create(voyage.Currency, toCurrency);
+            if (conversionRates.ContainsKey(key))
+            {
+                var conversionRate = conversionRates[key];
+                return (voyage.Price * conversionRate);
+            }
+            //TODO add logging for something wrong here
+            return 0;
         }
 
     }
