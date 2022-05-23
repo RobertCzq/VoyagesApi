@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using VoyagesApi.Data;
 
@@ -46,14 +47,16 @@ namespace VoyagesApi
                 };
             });
             services.AddTransient<IVoyageDataStore, JsonVoyageDataStore>();
-            services.AddControllers();
+
+            services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())); 
+
             services.AddMemoryCache();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo 
                 { Title = "Mærsk Voyages Api", 
                   Version = "v1",
-                  Description = "Solution for Mærsk backend homework.",
                   Contact = new OpenApiContact
                   {
                       Name = "Robert Cazacu",
