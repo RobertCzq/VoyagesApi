@@ -67,7 +67,7 @@ namespace VoyagesApi.Tests
             }
            
             //Act
-            var actionResult = controller.GetAverage(code, Currency.USD);
+            var actionResult = controller.GetAveragePrice(code, Currency.USD);
 
             //Assert
             var result = actionResult as OkObjectResult;

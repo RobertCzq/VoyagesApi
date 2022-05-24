@@ -49,48 +49,29 @@ namespace VoyagesApi.Controllers
         }
 
         /// <summary>
-        /// Returns the last 10 prices, currencies and timestamps for the specified voyage code
-        /// </summary>
-        /// <param name="voyageCode"></param>
-        /// <returns></returns>
-        [HttpGet("GetLatestPrices({voyageCode})")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(Roles = "Administrator,Normal")]
-        public ActionResult GetLatestPrices(string voyageCode)
-        {
-            var voyages = GetVoyages();
-
-            var filteredVoyages = voyages.Where(v => v.VoyageCode.Equals(voyageCode))
-                                         .OrderByDescending(v => v.Timestamp)
-                                         .Take(10)
-                                         .Select(v => new { Price = v.Price, Currency = v.Currency, Timestamp = v.Timestamp });
-
-            if (filteredVoyages.Any())
-                return Ok(filteredVoyages);
-
-            return NotFound();
-        }
-
-        /// <summary>
-        /// Returns the average of all the prices for the specified voyage code in the specified currency 
+        /// Returns the average of the last 10 prices for the specified voyage code in the specified currency 
         /// </summary>
         /// <param name="voyageCode"></param>
         /// <param name="currency"></param>
         /// <returns></returns>
-        [HttpGet("GetAverage({voyageCode},{currency})")]
+        [HttpGet("GetAveragePrice({voyageCode},{currency})")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Administrator,Normal")]
-        public ActionResult GetAverage(string voyageCode, Currency currency)
+        public ActionResult GetAveragePrice(string voyageCode, Currency currency)
         {
             var voyages = GetVoyages();
 
             var filteredVoyages = voyages.Where(voyage => voyage.VoyageCode.Equals(voyageCode));
             if (filteredVoyages.Any())
             {
-                var average = voyages.Sum(value => CurrencyHelper.TransformToCurrency(value, currency)) / voyages.Count();
-                return Ok(average);
+                var totalNrOfVoyages = filteredVoyages.Count();
+                var nrItemsToTake = 10;
+                var toDivideTo = totalNrOfVoyages >= nrItemsToTake ? nrItemsToTake : totalNrOfVoyages; 
+                var averagePrice = filteredVoyages.OrderByDescending(v => v.Timestamp)
+                                     .Take(nrItemsToTake)
+                                     .Sum(value => CurrencyHelper.TransformToCurrency(value, currency)) / toDivideTo;
+                return Ok(averagePrice);
             }
 
             return NotFound();

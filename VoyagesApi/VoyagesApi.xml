@@ -10,14 +10,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:VoyagesApi.Controllers.VoyagesController.GetLatestPrices(System.String)">
-            <summary>
-            Returns the last 10 prices, currencies and timestamps for the specified voyage code
-            </summary>
-            <param name="voyageCode"></param>
-            <returns></returns>
-        </member>
-        <member name="M:VoyagesApi.Controllers.VoyagesController.GetAverage(System.String,VoyagesApi.Models.Currency)">
+        <member name="M:VoyagesApi.Controllers.VoyagesController.GetAveragePrice(System.String,VoyagesApi.Models.Currency)">
             <summary>
             Returns the average of all the prices for the specified voyage code in the specified currency 
             </summary>

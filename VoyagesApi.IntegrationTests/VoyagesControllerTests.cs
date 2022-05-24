@@ -28,82 +28,43 @@ namespace VoyagesApi.IntegrationTests
         }
 
         [Fact]
-        public async Task GetAverage_Returns_Ok_Response()
+        public async Task GetAveragePrice_Returns_Ok_Response()
         {
             // Arrange
             await AuthenticateAsync();
 
             // Act
-            var response = await TestClient.GetAsync($"/api/Voyages/GetAverage(451S,{Currency.EUR})");
+            var response = await TestClient.GetAsync($"/api/Voyages/GetAveragePrice(451S,{Currency.EUR})");
 
             //// Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
-        public async Task GetAverage_Returns_Unauthorized()
+        public async Task GetAveragePrice_Returns_Unauthorized()
         {
             // Arrange
             //Do not authenticate first
 
             // Act
-            var response = await TestClient.GetAsync($"/api/Voyages/GetAverage(451S,{Currency.EUR})");
+            var response = await TestClient.GetAsync($"/api/Voyages/GetAveragePrice(451S,{Currency.EUR})");
 
             //// Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
-        public async Task GetAverage_Returns_NotFound_Response()
+        public async Task GetAveragePrice_Returns_NotFound_Response()
         {
             // Arrange
             await AuthenticateAsync();
 
             // Act
-            var response = await TestClient.GetAsync($"/api/Voyages/GetAverage(Test,{Currency.EUR})");
+            var response = await TestClient.GetAsync($"/api/Voyages/GetAveragePrice(Test,{Currency.EUR})");
 
             //// Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task GetLatestPrices_Returns_Ok_Response()
-        {
-            // Arrange
-            await AuthenticateAsync();
-
-            // Act
-            var response = await TestClient.GetAsync("/api/Voyages/GetLatestPrices(451S)");
-
-            //// Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task GetLatestPrices_Returns_Unauthorized()
-        {
-            // Arrange
-            //Do not authenticate first
-
-            // Act
-            var response = await TestClient.GetAsync("/api/Voyages/GetLatestPrices(451S)");
-
-            //// Assert
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task GetLatestPrices_Returns_NotFound_Response()
-        {
-            // Arrange
-            await AuthenticateAsync();
-
-            // Act
-            var response = await TestClient.GetAsync("/api/Voyages/GetLatestPrices(Test)");
-
-            //// Assert
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        }     
 
         [Fact]
         public async Task UpdatePrice_Returns_Created_Response()
