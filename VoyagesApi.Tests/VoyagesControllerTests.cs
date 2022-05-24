@@ -74,5 +74,30 @@ namespace VoyagesApi.Tests
             var returnedAverage = (decimal)result.Value;
             Assert.Equal(price, returnedAverage);
         }
+
+
+        [Fact]
+        public async void UpdatePrice_Returns_Created_Item()
+        {
+            //Arrange
+            var (memoryCache, logger, dataStore) = GetSetup();
+
+            var voyage = Mock.Of<Voyage>();
+            voyage.VoyageCode = "Test";
+            voyage.Price = 120;
+            voyage.Currency = Currency.USD;
+            voyage.Timestamp = DateTimeOffset.Now;
+
+            A.CallTo(() => dataStore.SaveVoyage(voyage)).Returns((true, new List<Voyage>() { voyage }));
+            
+            var controller = new VoyagesController(memoryCache, logger, dataStore);
+
+            //Act
+            var actionResult = await controller.UpdatePrice(voyage);
+
+            //Assert
+            var result = actionResult as CreatedResult;
+            Assert.Equal(201, result.StatusCode);
+        }
     }
 }

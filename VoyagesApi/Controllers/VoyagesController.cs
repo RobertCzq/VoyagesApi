@@ -116,6 +116,25 @@ namespace VoyagesApi.Controllers
             return BadRequest();
         }
 
+        [HttpPost("UpdatePrice")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> UpdatePrice([FromBody] Voyage newVoyage)
+        {
+            _logger.LogInformation("Add new price for voyage code {0} in currency {1} at time {3}", newVoyage.VoyageCode, newVoyage.Currency, newVoyage.Timestamp);
+
+            var (saved, data) = await _voyageData.SaveVoyage(newVoyage);
+            if (saved)
+            {
+                CacheHelper.SetUpCache(voyageListCacheKey, _cache, data);
+                return Created("", newVoyage);
+            }
+
+            _logger.LogInformation("Add new price BAD REQUEST for voyage code {0} in currency {1} at time {3}", newVoyage.VoyageCode, newVoyage.Currency, newVoyage.Timestamp);
+            return BadRequest();
+        }
+
         private async Task<IEnumerable<Voyage>> GetVoyages()
         {
             _logger.Log(LogLevel.Information, "Trying to fetch the list of voyages from cache.");
