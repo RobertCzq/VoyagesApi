@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -88,6 +87,40 @@ namespace VoyagesApi.IntegrationTests
 
             // Act
             var response = await TestClient.PostAsync(uri, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
+
+            //// Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdatePrice_Returns_Created_Response2()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var uri = TestClient.BaseAddress + "api/Voyages/UpdatePrice";
+
+            var body = "{\"VoyageCode\":\"Test\",\"Price\":120.0,\"Currency\":0,\"Timestamp\":\"2022-05-25T01:48:05.5339157+02:00\"}";
+
+
+            // Act
+            var response = await TestClient.PostAsync(uri, new StringContent(body, Encoding.UTF8, "application/json"));
+
+            //// Assert
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdatePrice_Returns_Unauthorized_Response2()
+        {
+            // Arrange
+            //Do not authenticate first
+            var uri = TestClient.BaseAddress + "api/Voyages/UpdatePrice";
+
+            var body = "{\"VoyageCode\":\"Test\",\"Price\":120.0,\"Currency\":0,\"Timestamp\":\"2022-05-25T01:48:05.5339157+02:00\"}";
+
+
+            // Act
+            var response = await TestClient.PostAsync(uri, new StringContent(body, Encoding.UTF8, "application/json"));
 
             //// Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
