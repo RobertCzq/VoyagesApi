@@ -12,20 +12,29 @@ namespace VoyagesApi.Data
     public class JsonVoyageDataStore : IVoyageDataStore
     {
         private string _jsonFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\Data.json");
-        public IEnumerable<Voyage> GetAll()
+        public async Task<IEnumerable<Voyage>> GetAll()
         {
-            var data = JsonConvert.DeserializeObject<IEnumerable<Voyage>>(File.ReadAllText(_jsonFilePath));
+            IEnumerable<Voyage> data = new List<Voyage>();
+            await Task.Run(() =>
+            {
+                data = JsonConvert.DeserializeObject<IEnumerable<Voyage>>(File.ReadAllText(_jsonFilePath));
+            });
+
             return data;
         }
 
-        public (bool, IEnumerable<Voyage>) SaveVoyage(Voyage voyage)
+        public async Task<(bool, IEnumerable<Voyage>)> SaveVoyage(Voyage voyage)
         {
-            var newData = new List<Voyage>(); 
-            var data = JsonConvert.DeserializeObject<IEnumerable<Voyage>>(File.ReadAllText(_jsonFilePath));
-            newData.AddRange(data);
-            newData.Add(voyage);
-            string json = JsonConvert.SerializeObject(newData, Formatting.Indented);
-            File.WriteAllText(_jsonFilePath, json);
+            var newData = new List<Voyage>();
+            await Task.Run(() =>
+            {
+                var data = JsonConvert.DeserializeObject<IEnumerable<Voyage>>(File.ReadAllText(_jsonFilePath));
+                newData.AddRange(data);
+                newData.Add(voyage);
+                string json = JsonConvert.SerializeObject(newData, Formatting.Indented);
+                File.WriteAllText(_jsonFilePath, json);
+            });
+
             return (true, newData);
         }
     }

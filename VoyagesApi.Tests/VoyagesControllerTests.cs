@@ -31,7 +31,7 @@ namespace VoyagesApi.Tests
         }
 
         [Fact]
-        public void GetAll_Returns_Correct_Number_Of_Items()
+        public async void GetAll_Returns_Correct_Number_Of_Items()
         {
             //Arrange
             var (memoryCache, logger, dataStore) = GetSetup();
@@ -40,7 +40,7 @@ namespace VoyagesApi.Tests
             var controller = new VoyagesController(memoryCache, logger, dataStore);
 
             //Act
-            var actionResult = controller.GetAll();
+            var actionResult = await controller.GetAll();
 
             //Assert
             var result = actionResult as OkObjectResult;
@@ -49,7 +49,7 @@ namespace VoyagesApi.Tests
         }
 
         [Fact]
-        public void GetAverage_Returns_Correct_Average()
+        public async void GetAverage_Returns_Correct_Average()
         {
             //Arrange
             var (memoryCache, logger, dataStore) = GetSetup();
@@ -67,7 +67,7 @@ namespace VoyagesApi.Tests
             }
            
             //Act
-            var actionResult = controller.GetAveragePrice(code, Currency.USD);
+            var actionResult = await controller.GetAveragePrice(code, Currency.USD);
 
             //Assert
             var result = actionResult as OkObjectResult;

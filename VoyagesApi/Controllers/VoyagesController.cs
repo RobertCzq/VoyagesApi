@@ -39,12 +39,16 @@ namespace VoyagesApi.Controllers
         [HttpGet("GetAll")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var voyages = GetVoyages();
-            if(voyages.Any())
+            _logger.LogInformation("Getting all elements");
+            var voyages = await GetVoyages();
+            if (voyages.Any())
+            {
                 return Ok(voyages);
+            }
 
+            _logger.LogWarning("GetAll NOT FOUND");
             return NotFound();
         }
 
@@ -58,10 +62,10 @@ namespace VoyagesApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Administrator,Normal")]
-        public ActionResult GetAveragePrice(string voyageCode, Currency currency)
+        public async Task<IActionResult> GetAveragePrice(string voyageCode, Currency currency)
         {
-            var voyages = GetVoyages();
-
+            _logger.LogInformation("Getting averege price for voyage code {0} in currency {1}", voyageCode, currency);
+            var voyages = await GetVoyages();
             var filteredVoyages = voyages.Where(voyage => voyage.VoyageCode.Equals(voyageCode));
             if (filteredVoyages.Any())
             {
@@ -74,6 +78,7 @@ namespace VoyagesApi.Controllers
                 return Ok(averagePrice);
             }
 
+            _logger.LogInformation("Get averege price NOT FOUND for voyage code {0} in currency {1}", voyageCode, currency);
             return NotFound();
         }
 
@@ -89,8 +94,9 @@ namespace VoyagesApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Administrator")]
-        public ActionResult UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
+        public async Task<IActionResult> UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
         {
+            _logger.LogInformation("Add new price for voyage code {0} in currency {1} at time {3}", voyageCode, currency, timestamp);
             var newVoyage = new Voyage
             {
                 VoyageCode = voyageCode,
@@ -99,17 +105,18 @@ namespace VoyagesApi.Controllers
                 Timestamp = timestamp
             };
 
-            var (saved, data) = _voyageData.SaveVoyage(newVoyage);
+            var (saved, data) = await _voyageData.SaveVoyage(newVoyage);
             if (saved)
             {
                 CacheHelper.SetUpCache(voyageListCacheKey, _cache, data);
                 return Created("", newVoyage);
             }
 
+            _logger.LogInformation("Add new price BAD REQUEST for voyage code {0} in currency {1} at time {3}", voyageCode, currency, timestamp);
             return BadRequest();
         }
 
-        private IEnumerable<Voyage> GetVoyages()
+        private async Task<IEnumerable<Voyage>> GetVoyages()
         {
             _logger.Log(LogLevel.Information, "Trying to fetch the list of voyages from cache.");
             if (_cache.TryGetValue(voyageListCacheKey, out IEnumerable<Voyage> voyages))
@@ -119,15 +126,15 @@ namespace VoyagesApi.Controllers
             else
             {
                 _logger.Log(LogLevel.Information, "Voyages list not found in cache. Fetching from database.");
-                voyages = GetData();
+                voyages = await GetData();
             }
 
             return voyages;
         }
 
-        private IEnumerable<Voyage> GetData()
+        private async Task<IEnumerable<Voyage>> GetData()
         {
-            var voyageList = _voyageData.GetAll();
+            var voyageList = await _voyageData.GetAll();
             CacheHelper.SetUpCache(voyageListCacheKey, _cache, voyageList);
             return voyageList;
         }

@@ -8,7 +8,7 @@ namespace VoyagesApi.Data
 {
     public interface IVoyageDataStore
     {
-        IEnumerable<Voyage> GetAll();
-        (bool, IEnumerable<Voyage>) SaveVoyage(Voyage voyage);
+        Task<IEnumerable<Voyage>> GetAll();
+        Task<(bool, IEnumerable<Voyage>)> SaveVoyage(Voyage voyage);
     }
 }

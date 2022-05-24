@@ -12,7 +12,7 @@
         </member>
         <member name="M:VoyagesApi.Controllers.VoyagesController.GetAveragePrice(System.String,VoyagesApi.Models.Currency)">
             <summary>
-            Returns the average of all the prices for the specified voyage code in the specified currency 
+            Returns the average of the last 10 prices for the specified voyage code in the specified currency 
             </summary>
             <param name="voyageCode"></param>
             <param name="currency"></param>
