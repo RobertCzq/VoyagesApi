@@ -16,10 +16,8 @@ namespace VoyagesApi.Tests
 {
     public class VoyagesControllerTests
     {
-        [Fact]
-        public void GetAll_Returns_Correct_Number_Of_Items()
+        (IMemoryCache, ILogger<VoyagesController>, IVoyageDataStore) GetSetup()
         {
-            //Arrange
             var services = new ServiceCollection();
             services.AddMemoryCache();
             var serviceProvider = services.BuildServiceProvider();
@@ -27,10 +25,18 @@ namespace VoyagesApi.Tests
 
             var logger = Mock.Of<ILogger<VoyagesController>>();
 
-            var fakeVoyages = A.CollectionOfDummy<Voyage>(5).AsEnumerable();
             var dataStore = A.Fake<IVoyageDataStore>();
-            A.CallTo(() => dataStore.GetAll()).Returns(fakeVoyages);
 
+            return (memoryCache, logger, dataStore);
+        }
+
+        [Fact]
+        public void GetAll_Returns_Correct_Number_Of_Items()
+        {
+            //Arrange
+            var (memoryCache, logger, dataStore) = GetSetup();
+            var fakeVoyages = A.CollectionOfDummy<Voyage>(5).AsEnumerable();
+            A.CallTo(() => dataStore.GetAll()).Returns(fakeVoyages);
             var controller = new VoyagesController(memoryCache, logger, dataStore);
 
             //Act
@@ -46,17 +52,9 @@ namespace VoyagesApi.Tests
         public void GetAverage_Returns_Correct_Average()
         {
             //Arrange
-            var services = new ServiceCollection();
-            services.AddMemoryCache();
-            var serviceProvider = services.BuildServiceProvider();
-            var memoryCache = serviceProvider.GetService<IMemoryCache>();
-
-            var logger = Mock.Of<ILogger<VoyagesController>>();
-
+            var (memoryCache, logger, dataStore) = GetSetup();
             var fakeVoyages = A.CollectionOfDummy<Voyage>(10).AsEnumerable();
-            var dataStore = A.Fake<IVoyageDataStore>();
             A.CallTo(() => dataStore.GetAll()).Returns(fakeVoyages);
-
             var controller = new VoyagesController(memoryCache, logger, dataStore);
 
             //Update values
