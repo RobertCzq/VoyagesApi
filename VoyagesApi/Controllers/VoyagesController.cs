@@ -53,7 +53,7 @@ namespace VoyagesApi.Controllers
         /// </summary>
         /// <param name="voyageCode"></param>
         /// <returns></returns>
-        [HttpGet("GetLatestPrices")]
+        [HttpGet("GetLatestPrices({voyageCode})")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Administrator,Normal")]
