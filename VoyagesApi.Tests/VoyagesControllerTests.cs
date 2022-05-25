@@ -49,6 +49,24 @@ namespace VoyagesApi.Tests
         }
 
         [Fact]
+        public async void GetAll_Returns_NoItems_Found()
+        {
+            //Arrange
+            var (memoryCache, logger, dataStore) = GetSetup();
+            var fakeVoyages = A.CollectionOfDummy<Voyage>(0).AsEnumerable();
+
+            A.CallTo(() => dataStore.GetAll()).Returns(fakeVoyages);
+            var controller = new VoyagesController(memoryCache, logger, dataStore);
+
+            //Act
+            var actionResult = await controller.GetAll();
+
+            //Assert
+            var result = actionResult as NotFoundResult;
+            Assert.Equal(404, result.StatusCode);
+        }
+
+        [Fact]
         public async void GetAverage_Returns_Correct_Average()
         {
             //Arrange
@@ -97,7 +115,33 @@ namespace VoyagesApi.Tests
 
             //Assert
             var result = actionResult as CreatedResult;
-            Assert.Equal(201, result.StatusCode);
+            var createdVoyage = result.Value;
+            Assert.Equal(voyage, createdVoyage);
         }
+
+        [Fact]
+        public async void UpdatePrice_Returns_BadRequest()
+        {
+            //Arrange
+            var (memoryCache, logger, dataStore) = GetSetup();
+
+            var voyage = Mock.Of<Voyage>();
+            voyage.VoyageCode = "Test";
+            voyage.Price = 120;
+            voyage.Currency = Currency.USD;
+            voyage.Timestamp = DateTimeOffset.Now;
+
+            A.CallTo(() => dataStore.SaveVoyage(voyage)).Returns((true, new List<Voyage>() { voyage }));
+
+            var controller = new VoyagesController(memoryCache, logger, dataStore);
+
+            //Act
+            var actionResult = await controller.UpdatePrice(voyage.VoyageCode, voyage.Price, voyage.Currency, voyage.Timestamp);
+
+            //Assert
+            var result = actionResult as BadRequestResult;
+            Assert.Equal(400, result.StatusCode);
+        }
+
     }
 }

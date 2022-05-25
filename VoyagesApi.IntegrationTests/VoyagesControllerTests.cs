@@ -17,7 +17,7 @@ namespace VoyagesApi.IntegrationTests
         public async Task GetAll_Returns_Ok_Response()
         {
             // Arrange
-            await AuthenticateAsync();
+            await AuthenticateAsyncAmnin();
 
             // Act
             var response = await TestClient.GetAsync("/api/Voyages/GetAll");
@@ -30,7 +30,7 @@ namespace VoyagesApi.IntegrationTests
         public async Task GetAveragePrice_Returns_Ok_Response()
         {
             // Arrange
-            await AuthenticateAsync();
+            await AuthenticateAsyncAmnin();
 
             // Act
             var response = await TestClient.GetAsync($"/api/Voyages/GetAveragePrice(451S,{Currency.EUR})");
@@ -56,10 +56,10 @@ namespace VoyagesApi.IntegrationTests
         public async Task GetAveragePrice_Returns_NotFound_Response()
         {
             // Arrange
-            await AuthenticateAsync();
+            await AuthenticateAsyncAmnin();
 
             // Act
-            var response = await TestClient.GetAsync($"/api/Voyages/GetAveragePrice(Test,{Currency.EUR})");
+            var response = await TestClient.GetAsync($"/api/Voyages/GetAveragePrice(DoNotFind,{Currency.EUR})");
 
             //// Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -69,7 +69,7 @@ namespace VoyagesApi.IntegrationTests
         public async Task UpdatePrice_Returns_Created_Response()
         {
             // Arrange
-            await AuthenticateAsync();     
+            await AuthenticateAsyncAmnin();     
             var uri = TestClient.BaseAddress + "api/Voyages/UpdatePrice(test,123,USD,2022-05-22T14%3A14%3A34.7363227)";
 
             // Act
@@ -77,6 +77,20 @@ namespace VoyagesApi.IntegrationTests
 
             //// Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdatePrice_Returns_Forbidden_Response()
+        {
+            // Arrange
+            await AuthenticateAsyncNormal();
+            var uri = TestClient.BaseAddress + "api/Voyages/UpdatePrice(test,123,USD,2022-05-22T14%3A14%3A34.7363227)";
+
+            // Act
+            var response = await TestClient.PostAsync(uri, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
+
+            //// Assert
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [Fact]
@@ -96,7 +110,7 @@ namespace VoyagesApi.IntegrationTests
         public async Task UpdatePrice_Returns_Created_Response2()
         {
             // Arrange
-            await AuthenticateAsync();
+            await AuthenticateAsyncAmnin();
             var uri = TestClient.BaseAddress + "api/Voyages/UpdatePrice";
 
             var body = "{\"VoyageCode\":\"Test\",\"Price\":120.0,\"Currency\":0,\"Timestamp\":\"2022-05-25T01:48:05.5339157+02:00\"}";
@@ -107,6 +121,23 @@ namespace VoyagesApi.IntegrationTests
 
             //// Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdatePrice_Returns_Forbiddden_Response2()
+        {
+            // Arrange
+            await AuthenticateAsyncNormal();
+            var uri = TestClient.BaseAddress + "api/Voyages/UpdatePrice";
+
+            var body = "{\"VoyageCode\":\"Test\",\"Price\":120.0,\"Currency\":0,\"Timestamp\":\"2022-05-25T01:48:05.5339157+02:00\"}";
+
+
+            // Act
+            var response = await TestClient.PostAsync(uri, new StringContent(body, Encoding.UTF8, "application/json"));
+
+            //// Assert
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [Fact]

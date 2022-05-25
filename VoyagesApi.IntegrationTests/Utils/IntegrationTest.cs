@@ -21,17 +21,22 @@ namespace VoyagesApi.IntegrationTests
             TestClient = appFactory.CreateClient();
         }
 
-        protected async Task AuthenticateAsync()
+        protected async Task AuthenticateAsyncAmnin()
         {
-            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync());
+            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync("admin", "admin_PW"));
         }
 
-        private async Task<string> GetJwtAsync()
+        protected async Task AuthenticateAsyncNormal()
+        {
+            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync("normal", "normal_PW"));
+        }
+
+        private async Task<string> GetJwtAsync(string username, string password)
         {
             var response = await TestClient.PostAsJsonAsync("/api/Login", new UserLogin 
             {
-                Username = "admin",
-                Password = "admin_PW"
+                Username = username,
+                Password = password
             });
 
             var registrationResponse = await response.Content.ReadAsStringAsync();
