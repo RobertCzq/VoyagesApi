@@ -25,6 +25,11 @@ namespace VoyagesApi.Controllers
             _config = config;
         }
 
+        /// <summary>
+        /// Returns a token if username and password match
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login([FromBody] UserLogin userLogin)

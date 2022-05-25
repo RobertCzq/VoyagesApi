@@ -83,7 +83,7 @@ namespace VoyagesApi.Controllers
         }
 
         /// <summary>
-        /// Adds a new record with the specified price, currency and timestamp for the voyage  
+        /// Adds a new price for the voyage   
         /// </summary>
         /// <param name="voyageCode"></param>
         /// <param name="price"></param>
@@ -110,6 +110,11 @@ namespace VoyagesApi.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Adds a new price for the voyage using the FromBody voyage object 
+        /// </summary>
+        /// <param name="newVoyage"></param>
+        /// <returns></returns>
         [HttpPost("UpdatePrice")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

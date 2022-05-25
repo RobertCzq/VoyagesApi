@@ -4,6 +4,13 @@
         <name>VoyagesApi</name>
     </assembly>
     <members>
+        <member name="M:VoyagesApi.Controllers.LoginController.Login(VoyagesApi.Models.UserLogin)">
+            <summary>
+            Returns a token if username and password match
+            </summary>
+            <param name="userLogin"></param>
+            <returns></returns>
+        </member>
         <member name="M:VoyagesApi.Controllers.VoyagesController.GetAll">
             <summary>
             Returns all voyage items
@@ -20,12 +27,19 @@
         </member>
         <member name="M:VoyagesApi.Controllers.VoyagesController.UpdatePrice(System.String,System.Decimal,VoyagesApi.Models.Currency,System.DateTimeOffset)">
             <summary>
-            Adds a new record with the specified price, currency and timestamp for the voyage  
+            Adds a new price for the voyage   
             </summary>
             <param name="voyageCode"></param>
             <param name="price"></param>
             <param name="currency"></param>
             <param name="timestamp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:VoyagesApi.Controllers.VoyagesController.UpdatePrice(VoyagesApi.Models.Voyage)">
+            <summary>
+            Adds a new price for the voyage using the FromBody voyage object 
+            </summary>
+            <param name="newVoyage"></param>
             <returns></returns>
         </member>
     </members>
