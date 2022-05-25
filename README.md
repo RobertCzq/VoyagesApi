@@ -14,8 +14,9 @@ The extra endpoints are as you can see from the attached picture:
 I have used a basic JWT token for authentication against some users that are stored in the UserConstants file. The are also different roles used for authentication (Administrator and Normal).
 The endpoints are configured as follows:
 - GettAll can be used without authentication
--GetAveragePrice can be used by both roles
+- GetAveragePrice can be used by both roles
 - both UpdatePrice can only be used only by the  Administrator role.
+
 For testing you can use either admin and admin_PW or normal and normal_PW.
 The workflow is as follows, go to login endpoint and used the provided credentials, you will get a token back that you then have to use in the subsequent requests for all endpoints besides GetAll.
 If you use Swagger you will have to copy the token into the Authorize form that pops up when you press the Authorize button in the upper right corner (see first picture) and press the authorize button, see picture bellow.
