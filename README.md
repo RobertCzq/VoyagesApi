@@ -1,7 +1,7 @@
 ![image](https://user-images.githubusercontent.com/20577566/170269252-1401798a-fc2f-4881-b4c4-403b137efa06.png)
 
 The picture above shows a summary of the api from swagger.
-The solution has been developed in Visual Studio 2019 and uses .Net 5
+The solution has been developed in Visual Studio 2019 and uses .Net 5. 
 In order to run it you would have to use .Net 5 since in .Net 6 there are some changes like the merging of the Startup and Program files into one file that will probably
 make it impossible to run without changes.
 This is an implementation of an api for getting data on voyage prices. Besides the 2 endpoints described in the problem text, I have decided to add 3 more endpoins for 
