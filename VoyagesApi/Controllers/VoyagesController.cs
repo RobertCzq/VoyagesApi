@@ -97,19 +97,13 @@ namespace VoyagesApi.Controllers
         public async Task<IActionResult> UpdatePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
         {
             _logger.LogInformation("Add new price for voyage code {0} in currency {1} at time {3}", voyageCode, currency, timestamp);
-            var newVoyage = new Voyage
-            {
-                VoyageCode = voyageCode,
-                Price = price,
-                Currency = currency,
-                Timestamp = timestamp
-            };
 
-            var (saved, data) = await _voyageData.SaveVoyage(newVoyage);
+
+            var (saved, voyage, data) = await _voyageData.SaveVoyagePrice(voyageCode, price, currency, timestamp);
             if (saved)
             {
                 CacheHelper.SetUpCache(voyageListCacheKey, _cache, data);
-                return Created("", newVoyage);
+                return Created("", voyage);
             }
 
             _logger.LogInformation("Add new price BAD REQUEST for voyage code {0} in currency {1} at time {3}", voyageCode, currency, timestamp);
@@ -124,7 +118,7 @@ namespace VoyagesApi.Controllers
         {
             _logger.LogInformation("Add new price for voyage code {0} in currency {1} at time {3}", newVoyage.VoyageCode, newVoyage.Currency, newVoyage.Timestamp);
 
-            var (saved, data) = await _voyageData.SaveVoyage(newVoyage);
+            var (saved, _, data) = await _voyageData.SaveVoyagePrice(newVoyage.VoyageCode, newVoyage.Price, newVoyage.Currency, newVoyage.Timestamp);
             if (saved)
             {
                 CacheHelper.SetUpCache(voyageListCacheKey, _cache, data);

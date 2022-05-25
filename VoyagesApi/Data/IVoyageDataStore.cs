@@ -9,6 +9,6 @@ namespace VoyagesApi.Data
     public interface IVoyageDataStore
     {
         Task<IEnumerable<Voyage>> GetAll();
-        Task<(bool, IEnumerable<Voyage>)> SaveVoyage(Voyage voyage);
+        Task<(bool, Voyage, IEnumerable<Voyage>)> SaveVoyagePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp);
     }
 }

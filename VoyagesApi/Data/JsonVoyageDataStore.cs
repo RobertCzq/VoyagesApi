@@ -23,19 +23,27 @@ namespace VoyagesApi.Data
             return data;
         }
 
-        public async Task<(bool, IEnumerable<Voyage>)> SaveVoyage(Voyage voyage)
+        public async Task<(bool, Voyage, IEnumerable<Voyage>)> SaveVoyagePrice(string voyageCode, decimal price, Currency currency, DateTimeOffset timestamp)
         {
             var newData = new List<Voyage>();
+            var newVoyage = new Voyage
+            {
+                VoyageCode = voyageCode,
+                Price = price,
+                Currency = currency,
+                Timestamp = timestamp
+            };
+
             await Task.Run(() =>
             {
                 var data = JsonConvert.DeserializeObject<IEnumerable<Voyage>>(File.ReadAllText(_jsonFilePath));
                 newData.AddRange(data);
-                newData.Add(voyage);
+                newData.Add(newVoyage);
                 string json = JsonConvert.SerializeObject(newData, Formatting.Indented);
                 File.WriteAllText(_jsonFilePath, json);
             });
 
-            return (true, newData);
+            return (true, newVoyage, newData);
         }
     }
 }

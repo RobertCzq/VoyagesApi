@@ -106,7 +106,7 @@ namespace VoyagesApi.Tests
             voyage.Currency = Currency.USD;
             voyage.Timestamp = DateTimeOffset.Now;
 
-            A.CallTo(() => dataStore.SaveVoyage(voyage)).Returns((true, new List<Voyage>() { voyage }));
+            A.CallTo(() => dataStore.SaveVoyagePrice(voyage.VoyageCode, voyage.Price, voyage.Currency, voyage.Timestamp)).Returns((true, voyage, new List<Voyage>() { voyage }));
             
             var controller = new VoyagesController(memoryCache, logger, dataStore);
 
@@ -117,30 +117,6 @@ namespace VoyagesApi.Tests
             var result = actionResult as CreatedResult;
             var createdVoyage = result.Value;
             Assert.Equal(voyage, createdVoyage);
-        }
-
-        [Fact]
-        public async void UpdatePrice_Returns_BadRequest()
-        {
-            //Arrange
-            var (memoryCache, logger, dataStore) = GetSetup();
-
-            var voyage = Mock.Of<Voyage>();
-            voyage.VoyageCode = "Test";
-            voyage.Price = 120;
-            voyage.Currency = Currency.USD;
-            voyage.Timestamp = DateTimeOffset.Now;
-
-            A.CallTo(() => dataStore.SaveVoyage(voyage)).Returns((true, new List<Voyage>() { voyage }));
-
-            var controller = new VoyagesController(memoryCache, logger, dataStore);
-
-            //Act
-            var actionResult = await controller.UpdatePrice(voyage.VoyageCode, voyage.Price, voyage.Currency, voyage.Timestamp);
-
-            //Assert
-            var result = actionResult as BadRequestResult;
-            Assert.Equal(400, result.StatusCode);
         }
 
     }
